@@ -24,7 +24,7 @@ xkcdPassword.generate(4)
 .then(DefaultPasswordHashingFunction)
 ```
 
-Note that this is a single use
+Note that this is a single use, not indicative of all possible uses.
 
 ## Differences
 

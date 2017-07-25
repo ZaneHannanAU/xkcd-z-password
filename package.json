@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/ZaneHannanAU/xkcd-z-password/issues"
   },
-  "homepage": "https://github.com/ZaneHannanAU/xkcd-z-password#readme"
+  "homepage": "https://github.com/ZaneHannanAU/xkcd-z-password#readme",
+  "dependencies": {
+    "random-lib": "^2.1.0"
+  }
 }

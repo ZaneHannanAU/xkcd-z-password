@@ -1,10 +1,13 @@
-# xkcd-z-password
+# [xkcd-z-password][xkcd-z-password]
 
 An XKCD-style password generator.
 
-By default, it comes with 113809 officially recognised words, of which only 70806 are in the default filter.
+By default, it comes with 113809 officially recognised words, of which only 70806 are in the default filter. For the same with no badwords, use [@ZaneHannanAU/xkcd-z-password-nobadwords][xkcd-z-password-nobad].
 
 It is heavily based on [@fardog/node-xkcd-password][xkcd-password], however some aspects of generation are rather different.
+
+[xkcd-z-password-nobad]: https://github.com/ZaneHannanAU/xkcd-z-password-nobad
+[xkcd-z-password]: https://www.npmjs.com/package/xkcd-z-password
 
 ## Usage
 
@@ -26,6 +29,25 @@ xkcdPassword.generate(4)
 
 Note that this is a single use, not indicative of all possible uses.
 
+For example, here is one with longer and shorter passwords.
+
+```javascript
+// A better use
+const xkcdPassword = require('xkcd-z-password').init({
+  minLength: 3, maxLength: 9, numWords: 3
+});
+
+// db data set given a user value or function
+xkcdPassword.generate()
+.then(pw => pw.join(' '))
+.then(pw => {
+  user.setPassword(pw) // recommended for pw storage: bcrypt/bcryptwasm/bcryptjs
+  .then(b => {
+    if (b) user.notify({type: 'PWSET', data: pw})
+  })
+})
+```
+
 ## Differences
 
 xkcd-z-password runs off an integrated array where all indefinites are removed, allowing faster password generation (non-redoing) and possibly lower memory usage (fewer instances of uvstrings in memory).
@@ -43,7 +65,7 @@ The provided filter function does not include the mentioned bad words, being man
 
 A mini CLI is bundled with the package, providing some basic setup and functionality, as well as a simple test.
 
-Note that it does not use anything specific, and is decidedly short and generic to allow it to be made easily.
+Note that it does not use anything specific, and is decidedly short and generic to allow it to be made easily, accessible via `cd node_modules/xkcd-z-password && npm start`.
 
 The entirety of it is listed below.
 

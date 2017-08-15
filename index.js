@@ -22,6 +22,7 @@ class xkcdPassword extends EventEmitter {
     * @arg {boolean} caseSensitive
     */
   constructor({
+    autoInit = true,
     numWords = 4, minLength = 5, maxLength = 8, wordList, wordFileZ,
     wordFile = path.join(__dirname, 'mwords', '113809of.fic'),
     // 113,809 official crosswords --- see
@@ -33,7 +34,6 @@ class xkcdPassword extends EventEmitter {
     this.ready = false;
     this.on('ready', () => {
       this.ready = true;
-      this.wordList.sort();
     })
 
     this.opts = {
@@ -47,7 +47,7 @@ class xkcdPassword extends EventEmitter {
       this.emit('ready', this);
     } else {
       this.wordList = [];
-      this.init();
+      if (autoInit) this.init();
     };
   }
 
@@ -166,7 +166,7 @@ class xkcdPassword extends EventEmitter {
 
     if (this.ready) return this[GENERATE](opts)
     else return new Promise((res, rej) => {
-      this.on('ready', () => setImmediate(
+      this.once('ready', () => setImmediate(
         () => this[GENERATE](opts).then(res, rej)
       ))
     });;

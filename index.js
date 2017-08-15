@@ -99,7 +99,10 @@ class xkcdPassword extends EventEmitter {
   /** @method initialise
     * @private
     */
-  init() {
+  init(newOptions) {
+    if (newOptions) {
+      this.opts = Object.assign({}, this.opts, newOptions)
+    }
     if (Array.isArray(this.opts.wordFileZ)) {
       this.opts.wordFileZ.forEach(filename => this.uzwords(filename));
     } else if (typeof this.opts.wordFileZ === 'string') {

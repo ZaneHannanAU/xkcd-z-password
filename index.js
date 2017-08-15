@@ -12,6 +12,7 @@ const [GENERATE, addOne, DELETE] = ['generate', 'addOne', 'delete']
 
 class xkcdPassword extends EventEmitter {
   /** @constructor xkcdPassword
+    * @arg {boolean} autoInit - automatically initialise the password generator by default.
     * @arg {integer as number} numWords - amount of words to generate per bundle
     * @arg {integer as number} minLength - minimum length of words to generate
     * @arg {integer as number} maxLength - maximum length of words to generate
@@ -32,9 +33,12 @@ class xkcdPassword extends EventEmitter {
   } = {}) {
     super();
     this.ready = false;
-    this.on('ready', () => {
-      this.ready = true;
-    })
+    this.onReady = new Promise(res => {
+      this.once('ready', () => {
+        this.ready = true;
+        res(this)
+      });
+    });
 
     this.opts = {
       numWords, minLength, maxLength, readableinputs,
@@ -166,9 +170,7 @@ class xkcdPassword extends EventEmitter {
 
     if (this.ready) return this[GENERATE](opts)
     else return new Promise((res, rej) => {
-      this.once('ready', () => setImmediate(
-        () => this[GENERATE](opts).then(res, rej)
-      ))
+      this.onReady.then(self => self[GENERATE](opts).then(res, rej))
     });;
   }
 
@@ -185,11 +187,9 @@ class xkcdPassword extends EventEmitter {
   }
 
   delete(...items) {
-    if (this.ready) return new Promise(r => r(this[DELETE](items)))
-    else return new Promise((res, rej) => {
-      this.once('ready', () => setImmediate(() => {
-        res(this[DELETE](items))
-      }))
+    return new Promise((res, rej) => {
+      if (this.ready) return res(this[DELETE](items))
+      else this.onReady.then(self => res(self[DELETE](items)))
     });
   }
   [DELETE](items) {
